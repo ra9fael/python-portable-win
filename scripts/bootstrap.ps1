@@ -1,5 +1,5 @@
 param (
-  [string]$Version = "3.14.5",
+  [string]$Version = "3.14.7",
   [string]$Arch = "amd64"
 )
 
@@ -24,7 +24,16 @@ Write-Host "`n[Phase 1/5] Backup Python ..." -ForegroundColor Yellow
 if (Test-Path $PythonDir)
 {
   Write-Host "`n[WARNING] Existing Python environment detected." -ForegroundColor Yellow
-  $BackupChoice = Read-Host "Do you want to export current packages to requirements.txt before upgrading? (Y/N)"
+  $CanExport = Test-Path $PythonExe
+  $BackupChoice = "N"
+  if ($CanExport)
+  {
+    $BackupChoice = Read-Host "Do you want to export current packages to requirements.txt before upgrading? (Y/N)"
+  }
+  else
+  {
+    Write-Host "[WARNING] $PythonExe not found. The existing environment is incomplete; skipping package export." -ForegroundColor Yellow
+  }
 
   if ($BackupChoice -match "^[yY]")
   {
@@ -47,11 +56,42 @@ $DownloadUrl = "https://www.python.org/ftp/python/$Version/python-$Version-embed
 
 try
 {
+  Invoke-WebRequest -Uri $DownloadUrl -Method Head -UseBasicParsing -TimeoutSec 20 | Out-Null
+  Write-Host "[OK] Embeddable package found on python.org." -ForegroundColor Green
+}
+catch
+{
+  $Resp = $_.Exception.Response
+  $StatusCode = $null
+  if ($null -ne $Resp)
+  {
+    try { $StatusCode = [int]$Resp.StatusCode } catch { $StatusCode = $null }
+  }
+
+  if ($StatusCode -eq 404)
+  {
+    Write-Host "[ERROR] No embeddable package found for Python $Version ($Arch)." -ForegroundColor Red
+    Write-Host "        The version string is probably invalid, or this release/arch has no embeddable zip." -ForegroundColor Red
+    Write-Host "        Check https://www.python.org/downloads/windows/ for valid versions." -ForegroundColor Red
+  }
+  else
+  {
+    Write-Host "[ERROR] Network error: could not reach python.org." -ForegroundColor Red
+    Write-Host "        $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "        Check your network connection, proxy settings, or try again later." -ForegroundColor Red
+  }
+  Pause
+  Exit
+}
+
+try
+{
   Invoke-WebRequest -Uri $DownloadUrl -OutFile $ZipFile
   Write-Host "[OK] Download complete." -ForegroundColor Green
 } catch
 {
-  Write-Host "[ERROR] Download failed. Check network or version." -ForegroundColor Red
+  Write-Host "[ERROR] Download failed: $($_.Exception.Message)" -ForegroundColor Red
+  Pause
   Exit
 }
 
