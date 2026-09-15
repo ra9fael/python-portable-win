@@ -134,6 +134,10 @@ Invoke-WebRequest -Uri $GetPipUrl -OutFile $GetPipFile
 Remove-Item $GetPipFile -Force
 Write-Host "[OK] pip installed successfully." -ForegroundColor Green
 
+Write-Host "[INFO] Installing setuptools and wheel (required for sdist builds)..." -ForegroundColor Cyan
+& $PythonExe -m pip install --no-warn-script-location setuptools wheel
+Write-Host "[OK] setuptools and wheel installed." -ForegroundColor Green
+
 # ---------------------------------------------------------
 # Phase 5: Dependency Restoration
 # ---------------------------------------------------------

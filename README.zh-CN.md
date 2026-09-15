@@ -44,7 +44,7 @@ Portable_Workspace/
 .\scripts\bootstrap.ps1
 ```
 
-_脚本默认下载 Python 3.12.14（也可通过 `-Version <x.y.z>` 指定其他版本），解压后启用 `site-packages` 并安装 `pip`。如果检测到已有环境，会先询问是否将已安装的包导出到 `requirements.txt`，完成后可自动还原。_
+_脚本默认下载 Python 3.14.7（也可通过 `-Version <x.y.z>` 指定其他版本），解压后启用 `site-packages`，并安装 `pip`、`setuptools` 和 `wheel`。如果检测到已有环境，会先询问是否将已安装的包导出到 `requirements.txt`，完成后可自动还原。_
 
 ### 2. 安装依赖
 

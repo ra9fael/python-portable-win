@@ -44,7 +44,7 @@ If you just cloned this repository, the `python/` folder will be missing. Build 
 .\scripts\bootstrap.ps1
 ```
 
-_This will download Python 3.12.14 by default (or pass `-Version <x.y.z>` for another version), extract it, enable `site-packages`, and install `pip`. If an existing environment is detected, it offers to export installed packages to `requirements.txt` first and restore them afterwards._
+_This will download Python 3.14.7 by default (or pass `-Version <x.y.z>` for another version), extract it, enable `site-packages`, and install `pip`, `setuptools`, and `wheel`. If an existing environment is detected, it offers to export installed packages to `requirements.txt` first and restore them afterwards._
 
 ### 2. Install Dependencies
 
