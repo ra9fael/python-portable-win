@@ -99,9 +99,11 @@ The `build_release.ps1` script creates a clean, portable ZIP ready for distribut
 3. Rewrites extensionless-script shebangs (e.g. `numba`, `jsonpointer`) to `#!..\python.exe`.
 4. Excludes caches (`__pycache__`, `.pip_cache`) from the archive.
 
+By default the archive is named `<workspace-folder>_Python<version>_<arch>.zip` (e.g. `LZUAINuclearPortable_Python3.12.10_amd64.zip`):
+
 ```powershell
-.\scripts\build_release.ps1
-.\scripts\build_release.ps1 -ReleaseName "MyApp_v2"
+.\scripts\build_release.ps1                                        # auto-named from folder + Python version + arch
+.\scripts\build_release.ps1 -ReleaseName "MyApp_v2"                # MyApp_v2.zip
 .\scripts\build_release.ps1 -ReleaseName "MyApp" -AppendDateTime   # MyApp_20260520_1430.zip
 ```
 

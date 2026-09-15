@@ -99,9 +99,11 @@ PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\scripts\run.ps1
 3. 将无后缀脚本的 shebang（如 `numba`、`jsonpointer`）改写为 `#!..\python.exe`。
 4. 归档时排除缓存（`__pycache__`、`.pip_cache`）。
 
+默认归档名为 `<工作区目录名>_Python<版本>_<架构>.zip`（例如 `LZUAINuclearPortable_Python3.12.10_amd64.zip`）：
+
 ```powershell
-.\scripts\build_release.ps1
-.\scripts\build_release.ps1 -ReleaseName "MyApp_v2"
+.\scripts\build_release.ps1                                        # 按目录名 + Python 版本 + 架构自动命名
+.\scripts\build_release.ps1 -ReleaseName "MyApp_v2"                # MyApp_v2.zip
 .\scripts\build_release.ps1 -ReleaseName "MyApp" -AppendDateTime   # MyApp_20260520_1430.zip
 ```
 

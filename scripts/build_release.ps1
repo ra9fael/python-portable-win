@@ -5,7 +5,9 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [string]$ReleaseName = "Portable_Python",
+    [string]$ReleaseName = "",
+    [Parameter(Mandatory=$false)]
+    [string]$Arch = "amd64",
     [Parameter(Mandatory=$false)]
     [switch]$AppendDateTime
 )
@@ -15,8 +17,18 @@ $ErrorActionPreference = "Stop"
 $ScriptDir    = Split-Path -Parent $MyInvocation.MyCommand.Path
 $WorkspaceDir = (Resolve-Path (Join-Path $ScriptDir "..")).Path
 $DistDir      = Join-Path $WorkspaceDir "dist"
+$LocalPythonExe = Join-Path $WorkspaceDir "python\python.exe"
 
 if (-not (Test-Path $DistDir)) { New-Item -ItemType Directory -Force $DistDir | Out-Null }
+
+if (-not $ReleaseName) {
+    if (-not (Test-Path $LocalPythonExe)) {
+        throw "python\python.exe not found — run bootstrap.ps1 first or pass -ReleaseName explicitly."
+    }
+    $PyVersion = (& $LocalPythonExe -V).Trim() -replace '^Python\s+', ''
+    $ReleaseName = "$(Split-Path $WorkspaceDir -Leaf)_Python$PyVersion`_$Arch"
+    Write-Host "  Using release name: $ReleaseName"
+}
 
 if ($AppendDateTime) {
     $TimeStamp  = Get-Date -Format "yyyyMMdd_HHmm"
@@ -38,8 +50,6 @@ if (Test-Path (Join-Path $WorkspaceDir "_release_staging")) {
 # ---------- stream workspace into ZIP ----------
 
 Write-Step "[1/2] Streaming runtime files into archive..."
-
-$LocalPythonExe = Join-Path $WorkspaceDir "python\python.exe"
 
 $PyZipScript = @'
 import configparser, re, sys, zipfile
