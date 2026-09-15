@@ -152,7 +152,20 @@ for exe_path in exe_names.values():
     exe_path.unlink()
     print(f"  [DEL] {exe_path.name}")
 
-print(f"\n  Generated {generated} wrappers, removed {len(exe_names)} .exe files")
+# patch shebangs of extensionless scripts (e.g. numba, jsonpointer): they
+# carry the build machine's absolute python path, which leaks into the
+# release and breaks after the workspace moves. Rewrite to a relative path.
+patched = 0
+for script in sorted(staging_scripts.iterdir()):
+    if script.is_file() and not script.suffix:
+        data = script.read_bytes()
+        if data.startswith(b"#!") and b"python.exe" in data.split(b"\n", 1)[0].lower():
+            rest = data.split(b"\n", 1)[1] if b"\n" in data else b""
+            script.write_bytes(b"#!..\\python.exe\n" + rest)
+            print(f"  [PATCH] {script.name} shebang -> ..\\python.exe")
+            patched += 1
+
+print(f"\n  Generated {generated} wrappers, removed {len(exe_names)} .exe files, patched {patched} shebangs")
 '@
 
 & $LocalPythonExe -c $PyGenScript $StagingScripts $StagingSitePkgs
