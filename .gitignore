@@ -219,3 +219,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# LZUAINuclear
+lessons/
+
+# Ai Agents
+.claude/
+.workbuddy/
+.codebuddy/
+.pi/
+.codex/
+.qoder/
+.trae/
