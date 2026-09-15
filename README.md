@@ -94,16 +94,15 @@ PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\scripts\run.ps1
 
 The `build_release.ps1` script creates a clean, portable ZIP ready for distribution:
 
-1. Copies only runtime files to a staging directory (`python/`, `scripts/`, and app dirs).
-2. Scans `site-packages/*.dist-info/entry_points.txt` and generates `.bat` wrappers for every `.exe` in `python/Scripts/`, replacing hardcoded-shebang binaries with relative-path batch launchers.
-3. Purges caches (`__pycache__`, `.pip_cache`).
-4. Zips everything into `dist/`.
+1. Streams `python/`, `scripts/`, and app dirs directly into the ZIP — no staging copy.
+2. Scans `site-packages/*.dist-info/entry_points.txt` and generates relative-path `.bat` wrappers for every `.exe` in `python/Scripts/` (the `.exe` files are not included).
+3. Rewrites extensionless-script shebangs (e.g. `numba`, `jsonpointer`) to `#!..\python.exe`.
+4. Excludes caches (`__pycache__`, `.pip_cache`) from the archive.
 
 ```powershell
 .\scripts\build_release.ps1
 .\scripts\build_release.ps1 -ReleaseName "MyApp_v2"
 .\scripts\build_release.ps1 -ReleaseName "MyApp" -AppendDateTime   # MyApp_20260520_1430.zip
-.\scripts\build_release.ps1 -KeepStaging                           # preserve _release_staging/ for inspection
 ```
 
 The generated `.bat` wrappers use `%~dp0..\python.exe` (resolved relative to the batch file), so the distribution works from any path — no reinstallation, no hardcoded paths.

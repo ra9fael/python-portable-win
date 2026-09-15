@@ -94,16 +94,15 @@ PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\scripts\run.ps1
 
 `build_release.ps1` 脚本会创建干净、可移植的发行版 ZIP：
 
-1. 仅将运行时文件复制到暂存目录（`python/`、`scripts/` 及各应用目录）。
-2. 扫描 `site-packages/*.dist-info/entry_points.txt`，为 `python/Scripts/` 下的每个 `.exe` 生成 `.bat` 包装器，用相对路径的批处理启动器替换硬编码 shebang 的二进制文件。
-3. 清除缓存（`__pycache__`、`.pip_cache`）。
-4. 将所有内容打包为 `dist/` 下的 ZIP。
+1. 将 `python/`、`scripts/` 及各应用目录直接流式写入 ZIP——无需 staging 拷贝。
+2. 扫描 `site-packages/*.dist-info/entry_points.txt`，为 `python/Scripts/` 下的每个 `.exe` 生成相对路径的 `.bat` 包装器（`.exe` 文件本身不会进入 ZIP）。
+3. 将无后缀脚本的 shebang（如 `numba`、`jsonpointer`）改写为 `#!..\python.exe`。
+4. 归档时排除缓存（`__pycache__`、`.pip_cache`）。
 
 ```powershell
 .\scripts\build_release.ps1
 .\scripts\build_release.ps1 -ReleaseName "MyApp_v2"
 .\scripts\build_release.ps1 -ReleaseName "MyApp" -AppendDateTime   # MyApp_20260520_1430.zip
-.\scripts\build_release.ps1 -KeepStaging                           # 保留 _release_staging/ 以便检查
 ```
 
 生成的 `.bat` 包装器使用 `%~dp0..\python.exe`（相对于批处理文件解析），因此发行版可以在任意路径下运行——无需重新安装，没有硬编码路径。
