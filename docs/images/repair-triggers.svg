@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 446" width="100%" role="img" aria-label="修复的四个触发点">
+  <defs>
+    <style>
+      .bg { fill: #FFFFFF; }
+      .node { fill: #FFFFFF; stroke: #D3D4DA; }
+      .node-brand { fill: #E5FFF2; stroke: #0FDC78; }
+      .out { fill: #F7F7F8; stroke: #D3D4DA; }
+      .h1 { fill: #171717; font: 600 18px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .h2 { fill: #6B6B76; font: 400 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .t { fill: #171717; font: 500 14px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .s { fill: #6B6B76; font: 400 11px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .brand-t { fill: #004D26; font: 500 15px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .brand-s { fill: #004D26; font: 400 11px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .mono { fill: #171717; font: 500 12px "JetBrains Mono", Consolas, monospace; }
+      .arr { stroke: #6B6B76; stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .cap { fill: #6B6B76; font: 400 11px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    </style>
+    <marker id="b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L7 4 L1 7 Z" fill="#6B6B76"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="760" height="446"/>
+  <text class="h1" x="40" y="38">修复的四个触发点</text>
+  <text class="h2" x="40" y="60">Four triggers, one repair function — no launcher required</text>
+
+  <rect class="node" x="30" y="80" width="160" height="92" rx="8"/>
+  <text class="t" x="46" y="110">pip.ps1</text>
+  <text class="s" x="46" y="130">安装成功后</text>
+  <text class="s" x="46" y="150">覆盖 uv 路径</text>
+
+  <rect class="node" x="205" y="80" width="160" height="92" rx="8"/>
+  <text class="t" x="221" y="110">activate.ps1</text>
+  <text class="s" x="221" y="130">dot-source 时</text>
+  <text class="s" x="221" y="150">覆盖终端场景</text>
+
+  <rect class="node" x="380" y="80" width="160" height="92" rx="8"/>
+  <text class="t" x="396" y="110">sitecustomize</text>
+  <text class="s" x="396" y="130">解释器启动时</text>
+  <text class="s" x="396" y="150">覆盖 IDE / -m</text>
+
+  <rect class="node" x="555" y="80" width="160" height="92" rx="8"/>
+  <text class="t" x="571" y="110">sitecustomize</text>
+  <text class="s" x="571" y="130">进程退出时</text>
+  <text class="s" x="571" y="150">覆盖裸 pip 安装</text>
+
+  <path class="arr" d="M110 172 V202 H380"/>
+  <path class="arr" d="M285 172 V202"/>
+  <path class="arr" d="M460 172 V202"/>
+  <path class="arr" d="M635 172 V202 H380"/>
+  <path class="arr" d="M380 202 V224" marker-end="url(#b)"/>
+
+  <rect class="node-brand" x="270" y="232" width="220" height="76" rx="8"/>
+  <text class="brand-t" x="288" y="262">repair.py</text>
+  <text class="brand-s" x="288" y="284">repair(root) · 幂等</text>
+
+  <path class="arr" d="M330 308 V340" marker-end="url(#b)"/>
+  <path class="arr" d="M430 308 V340" marker-end="url(#b)"/>
+
+  <rect class="out" x="150" y="348" width="220" height="72" rx="8"/>
+  <text class="mono" x="168" y="378">shim.exe</text>
+  <text class="s" x="168" y="400">替换所有绝对路径启动器</text>
+
+  <rect class="out" x="390" y="348" width="220" height="72" rx="8"/>
+  <text class="mono" x="408" y="378">&lt;name&gt;.entry</text>
+  <text class="s" x="408" y="400">module / func / gui</text>
+</svg>

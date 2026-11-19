@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" width="100%" role="img" aria-label="三层路径：解释器、包、入口">
+  <defs>
+    <style>
+      .bg { fill: #FFFFFF; }
+      .frame { fill: #F7F7F8; stroke: #D3D4DA; }
+      .row { fill: #FFFFFF; stroke: #D3D4DA; }
+      .head { fill: #6B6B76; font: 500 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: .04em; }
+      .h1 { fill: #171717; font: 600 18px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .h2 { fill: #6B6B76; font: 400 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .t { fill: #171717; font: 500 15px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .s { fill: #6B6B76; font: 400 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .ok { fill: #02743B; font: 600 14px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .bad { fill: #C0362C; font: 600 14px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .mono { fill: #171717; font: 500 13px "JetBrains Mono", Consolas, monospace; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="760" height="392"/>
+  <text class="h1" x="40" y="38">为什么只有“入口”这一层会失效</text>
+  <text class="h2" x="40" y="60">Relocatability comes down to: how many copies of the path exist?</text>
+
+  <rect class="frame" x="40" y="76" width="680" height="300" rx="10"/>
+  <text class="head" x="60" y="100">层级 LAYER</text>
+  <text class="head" x="260" y="100">路径存在哪里 WHERE</text>
+  <text class="head" x="540" y="100">换目录后 RESULT</text>
+
+  <rect class="row" x="56" y="112" width="648" height="72" rx="8"/>
+  <text class="t" x="76" y="142">解释器</text>
+  <text class="s" x="76" y="162">interpreter</text>
+  <text class="mono" x="260" y="142">sys.prefix</text>
+  <text class="s" x="260" y="162">由 python.exe 自身位置推导</text>
+  <text class="ok" x="540" y="152">✓ 自动跟随</text>
+
+  <rect class="row" x="56" y="196" width="648" height="72" rx="8"/>
+  <text class="t" x="76" y="226">依赖包</text>
+  <text class="s" x="76" y="246">site-packages</text>
+  <text class="mono" x="260" y="226">Lib/site-packages</text>
+  <text class="s" x="260" y="246">直接落盘，不记录安装路径</text>
+  <text class="ok" x="540" y="236">✓ 不受影响</text>
+
+  <rect class="row" x="56" y="280" width="648" height="72" rx="8" stroke="#C0362C"/>
+  <text class="t" x="76" y="310">启动器</text>
+  <text class="s" x="76" y="330">launcher</text>
+  <text class="mono" x="260" y="310">&lt;tool&gt;.exe 尾部</text>
+  <text class="s" x="260" y="330">安装时写入的绝对路径</text>
+  <text class="bad" x="540" y="320">✗ 失效，需要修复</text>
+</svg>

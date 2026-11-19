@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 312" width="100%" role="img" aria-label="shim 启动链">
+  <defs>
+    <style>
+      .bg { fill: #FFFFFF; }
+      .node { fill: #FFFFFF; stroke: #D3D4DA; }
+      .node-brand { fill: #E5FFF2; stroke: #0FDC78; }
+      .band { fill: #F7F7F8; stroke: #D3D4DA; }
+      .h1 { fill: #171717; font: 600 18px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .h2 { fill: #6B6B76; font: 400 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .t { fill: #171717; font: 500 15px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .s { fill: #6B6B76; font: 400 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .brand-t { fill: #004D26; font: 500 15px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .brand-s { fill: #004D26; font: 400 12px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .mono { fill: #171717; font: 500 13px "JetBrains Mono", Consolas, monospace; }
+      .arr { stroke: #6B6B76; stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .cap { fill: #6B6B76; font: 400 11px -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    </style>
+    <marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L7 4 L1 7 Z" fill="#6B6B76"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="760" height="312"/>
+  <text class="h1" x="40" y="38">启动链：一份二进制，多个身份</text>
+  <text class="h2" x="40" y="60">One shim binary, identity taken from the file name</text>
+
+  <rect class="node" x="40" y="84" width="200" height="80" rx="8"/>
+  <text class="t" x="58" y="116">&lt;tool&gt;.exe</text>
+  <text class="s" x="58" y="138">shim 副本 · 约 7 KB</text>
+
+  <rect class="node" x="280" y="84" width="220" height="80" rx="8"/>
+  <text class="t" x="298" y="116">&lt;tool&gt;.entry</text>
+  <text class="s" x="298" y="138">module / func / gui</text>
+
+  <rect class="node-brand" x="540" y="84" width="180" height="80" rx="8"/>
+  <text class="brand-t" x="558" y="116">..\python.exe</text>
+  <text class="brand-s" x="558" y="138">由自身位置推出</text>
+
+  <path class="arr" d="M240 124 H272" marker-end="url(#a)"/>
+  <path class="arr" d="M500 124 H532" marker-end="url(#a)"/>
+  <text class="cap" x="246" y="112">读</text>
+  <text class="cap" x="506" y="112">启动</text>
+
+  <rect class="band" x="40" y="196" width="680" height="86" rx="8"/>
+  <text class="mono" x="60" y="230">-c "import &lt;module&gt;; &lt;func&gt;()"  %*</text>
+  <text class="s" x="60" y="256">参数原样转发，退出码原样返回；不写任何路径到磁盘</text>
+</svg>

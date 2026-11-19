@@ -1,0 +1,150 @@
+name: selftest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  embeddable:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bootstrap (embeddable engine)
+        shell: pwsh
+        run: .\scripts\bootstrap.ps1 -Engine embeddable -NonInteractive
+
+      - name: Rebuild repair shim
+        shell: pwsh
+        run: .\scripts\build_launcher.ps1 -ShimOnly
+
+      - name: Relocation self-test
+        shell: pwsh
+        run: .\scripts\selftest.ps1
+
+  pbs:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: false
+
+      - name: Bootstrap (python-build-standalone)
+        shell: pwsh
+        run: .\scripts\bootstrap.ps1 -Engine pbs -NonInteractive
+
+      - name: Rebuild repair shim
+        shell: pwsh
+        run: .\scripts\build_launcher.ps1 -ShimOnly
+
+      - name: Relocation self-test
+        shell: pwsh
+        run: .\scripts\selftest.ps1
+
+  consumer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bootstrap into external .portable workspace
+        shell: pwsh
+        run: |
+          $ws = Join-Path $env:RUNNER_TEMP "portable-consumer\.portable"
+          New-Item -ItemType Directory -Path $ws -Force | Out-Null
+          .\scripts\bootstrap.ps1 -Workspace $ws -Engine embeddable -NonInteractive
+          if (-not (Test-Path (Join-Path $ws "python\python.exe"))) { throw "python missing" }
+          if (-not (Test-Path (Join-Path $ws "scripts\repair.py"))) { throw "repair.py missing" }
+          if (-not (Test-Path (Join-Path $ws "scripts\sitecustomize.py"))) { throw "sitecustomize.py missing" }
+          if (-not (Test-Path (Join-Path $ws "scripts\bin\shim.exe"))) { throw "shim missing" }
+          if (Test-Path ".\scripts\bin\shim.exe") { throw "upstream scripts/bin was written" }
+
+      - name: Build release from external workspace
+        shell: pwsh
+        run: |
+          $ws = Join-Path $env:RUNNER_TEMP "portable-consumer\.portable"
+          New-Item -ItemType Directory -Path (Join-Path $ws "app") -Force | Out-Null
+          "print('consumer ok')" | Set-Content (Join-Path $ws "app\main.py") -Encoding ASCII
+          "[test]" | Set-Content (Join-Path $ws "config.ini") -Encoding ASCII
+          "python -m app.main" | Set-Content (Join-Path $ws "start.bat") -Encoding ASCII
+          .\scripts\build_release.ps1 -Workspace $ws -ReleaseName consumer_test
+          $zip = Join-Path $ws "dist\consumer_test.zip"
+          if (-not (Test-Path $zip)) { throw "zip missing" }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $z = [IO.Compression.ZipFile]::OpenRead($zip)
+          $names = $z.Entries.FullName
+          $z.Dispose()
+          foreach ($need in @("python/python.exe", "scripts/repair.py", "scripts/sitecustomize.py", "scripts/bin/shim.exe", "app/main.py", "config.ini", "start.bat")) {
+            if (-not ($names -contains $need)) { throw "missing $need" }
+          }
+
+      - name: Pip workspace smoke
+        shell: pwsh
+        run: |
+          $ws = Join-Path $env:RUNNER_TEMP "portable-consumer\.portable"
+          .\scripts\pip.ps1 -Workspace $ws freeze | Select-Object -First 3
+
+      - name: Scaffold a new project
+        shell: pwsh
+        run: |
+          $proj = Join-Path $env:RUNNER_TEMP "scaffold-project"
+          New-Item -ItemType Directory -Path (Join-Path $proj "app") -Force | Out-Null
+          "print('ok')" | Set-Content (Join-Path $proj "app\main.py") -Encoding ASCII
+          "" | Set-Content (Join-Path $proj "requirements.txt") -Encoding ASCII
+          .\scripts\new-portable-project.ps1 -ProjectRoot $proj -AppDir app -Requirements requirements.txt -PythonVersion 3.14.7 -SkipSubmodule -Force
+          $generated = Join-Path $proj "scripts\build-portable.ps1"
+          if (-not (Test-Path $generated)) { throw "scaffold missing" }
+          if (Select-String -Path $generated -Pattern '__[A-Z][A-Z0-9_]*__' -CaseSensitive) { throw "unreplaced token" }
+          [void][scriptblock]::Create((Get-Content -Raw $generated))
+          if (-not (Select-String -Path (Join-Path $proj ".gitignore") -Pattern '^\.portable/$')) { throw "gitignore missing" }
+
+      - name: Scaffold scripts profile and build
+        shell: pwsh
+        run: |
+          $proj = Join-Path $env:RUNNER_TEMP "scaffold-scripts"
+          .\scripts\new-portable-project.ps1 -Profile scripts -ProjectRoot $proj -AppDir my_tools -PythonVersion 3.14.7 -Force
+          foreach ($f in @("scripts\build.ps1", "start.bat", "my_tools\main.py", "requirements.txt")) {
+            if (-not (Test-Path (Join-Path $proj $f))) { throw "missing $f" }
+          }
+          $generated = Join-Path $proj "scripts\build.ps1"
+          if (Select-String -Path $generated -Pattern '__[A-Z][A-Z0-9_]*__' -CaseSensitive) { throw "unreplaced token in scripts/build.ps1" }
+          [void][scriptblock]::Create((Get-Content -Raw $generated))
+          & $generated -SkipInstall
+          $zip = Get-ChildItem (Join-Path $proj "dist\*.zip") | Select-Object -First 1
+          if (-not $zip) { throw "scripts zip missing" }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $z = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
+          $names = $z.Entries.FullName
+          $z.Dispose()
+          foreach ($need in @("my_tools/main.py", "start.bat", "scripts/build_release.ps1")) {
+            if (-not ($names -contains $need)) { throw "missing $need" }
+          }
+
+      - name: Scaffold multi profile and build one app
+        shell: pwsh
+        run: |
+          $proj = Join-Path $env:RUNNER_TEMP "scaffold-multi"
+          New-Item -ItemType Directory -Path (Join-Path $proj "apps\one"), (Join-Path $proj "apps\two") -Force | Out-Null
+          "print('one')" | Set-Content (Join-Path $proj "apps\one\main.py") -Encoding ASCII
+          "print('two')" | Set-Content (Join-Path $proj "apps\two\main.py") -Encoding ASCII
+          "" | Set-Content (Join-Path $proj "apps\one\requirements.txt") -Encoding ASCII
+          "" | Set-Content (Join-Path $proj "apps\two\requirements.txt") -Encoding ASCII
+          .\scripts\new-portable-project.ps1 -Profile multi -ProjectRoot $proj -AppDirs apps/one,apps/two -PythonVersion 3.14.7 -SkipSubmodule -Force
+          foreach ($f in @("scripts\build-one.ps1", "scripts\build-two.ps1", "scripts\build-all.ps1")) {
+            if (-not (Test-Path (Join-Path $proj $f))) { throw "missing $f" }
+          }
+          New-Item -ItemType Directory -Path (Join-Path $proj "vendor") -Force | Out-Null
+          New-Item -ItemType Junction -Path (Join-Path $proj "vendor\python-portable-win") -Target (Get-Location).Path | Out-Null
+          & (Join-Path $proj "scripts\build-one.ps1") -SkipInstall
+          $zip = Get-ChildItem (Join-Path $proj "apps\one\.portable\dist\*.zip") | Select-Object -First 1
+          if (-not $zip) { throw "multi zip missing" }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $z = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
+          $names = $z.Entries.FullName
+          $z.Dispose()
+          if (-not ($names -contains "app/main.py")) { throw "missing app/main.py" }
+          if (@($names | Where-Object { $_ -like "app/.portable*" }).Count -gt 0) { throw "workspace copied into itself" }
+
