@@ -135,7 +135,7 @@ This project replaces those launchers with `scripts/bin/shim.exe` (~7 KB, contai
 
 After activation, `uv pip install` is pinned to the in-package interpreter through `UV_*` variables; `sitecustomize.py` also appends the package `Scripts` directory to child-process `PATH` and pins `PIP_USER` / `PIP_CACHE_DIR`, so tools that call `pip.exe` cannot install into the user profile.
 
-Full details, launcher comparison, and limits: [Architecture](docs/en/architecture.md). There is also an interactive [HTML tutorial](tutorial/portable-python-tutorial.en.html) (English; switch to Chinese in the page).
+Full details, launcher comparison, and limits: [Architecture](docs/en/architecture.md). There is also an interactive [HTML tutorial](tutorial/portable-python-tutorial.en.html) (English; switch to Chinese in the page; [live version](https://ra9fael.github.io/python-portable-win/)).
 
 ## Shared Runtime (Consumer Mode)
 
