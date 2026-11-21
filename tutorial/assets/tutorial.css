@@ -67,10 +67,15 @@
   }
 
   .lang-switch a,
-  .lang-switch span {
+  .lang-switch span,
+  .lang-switch button {
     padding: 0.3rem 0.7rem;
     color: var(--muted);
     text-decoration: none;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
   }
 
   .lang-switch .active {

@@ -135,7 +135,7 @@ Portable_Workspace/
 
 激活后 `uv pip install` 也会被 `UV_*` 变量锁定到包内解释器；`sitecustomize.py` 还会把包内 `Scripts` 追加进子进程的 `PATH`，并固定 `PIP_USER` / `PIP_CACHE_DIR`，因此直接调用 `pip.exe` 的工具也不会装到用户目录。
 
-完整原理、入口形态对比和边界见 [架构与工作原理](docs/zh/architecture.md)。也可以看可交互的 [HTML 教程](tutorial/portable-python-tutorial.html)（中文，页面内可切换英文；[在线版](https://ra9fael.github.io/python-portable-win/)）。
+完整原理、入口形态对比和边界见 [架构与工作原理](docs/zh/architecture.md)。也可以看可交互的 [HTML 教程](tutorial/index.html)（单页中英切换；[在线版](https://ra9fael.github.io/python-portable-win/)）。
 
 ## 作为共享运行时（Consumer Mode）
 
