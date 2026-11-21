@@ -24,7 +24,7 @@
     <p class="lede">Why does Python break when the path changes? Which approaches exist? How this repository makes relocation a default capability with a runtime plus a repair payload — and how to package <code>cowsay</code> yourself and run it from a new folder.</p>
     <div class="chips">
       <span class="chip">Windows / PowerShell 7</span>
-      <span class="chip">python-portable-win v1.4</span>
+      <span class="chip">python-portable-win v1.5</span>
       <span class="chip">15.1 MB example package</span>
       <span class="chip">No host Python required</span>
     </div>
@@ -347,7 +347,7 @@ flowchart LR
   <p>All runtime logic lives in <code>scripts/</code>; applications only reference it. <code>python/</code> is always generated output.</p>
 
   <div class="code">
-    <div class="bar"><span>python-portable-win/</span><span>v1.4</span></div>
+    <div class="bar"><span>python-portable-win/</span><span>v1.5</span></div>
     <pre>python-portable-win/
 ├── scripts/                     <span class="c"># runtime engine (core)</span>
 │   ├── bootstrap.ps1            <span class="c"># download / verify / install engine + pip + hook + shim</span>

@@ -24,7 +24,7 @@
     <p class="lede">为什么 Python 换个路径就坏？有哪些成熟方案？这个仓库如何用「运行时 + 修复载荷」把可搬迁性做成默认能力，以及如何用 <code>cowsay</code> 亲手打出一个能换目录运行的包。</p>
     <div class="chips">
       <span class="chip">Windows / PowerShell 7</span>
-      <span class="chip">python-portable-win v1.4</span>
+      <span class="chip">python-portable-win v1.5</span>
       <span class="chip">示例包 15.1 MB</span>
       <span class="chip">无需宿主 Python</span>
     </div>
@@ -347,7 +347,7 @@ flowchart LR
   <p>所有运行时逻辑都在 <code>scripts/</code>，应用只需要引用它；<code>python/</code> 永远是生成物。</p>
 
   <div class="code">
-    <div class="bar"><span>python-portable-win/</span><span>v1.4</span></div>
+    <div class="bar"><span>python-portable-win/</span><span>v1.5</span></div>
     <pre>python-portable-win/
 ├── scripts/                     <span class="c"># 运行时引擎（核心）</span>
 │   ├── bootstrap.ps1            <span class="c"># 下载 / 校验 / 安装引擎 + pip + hook + shim</span>
